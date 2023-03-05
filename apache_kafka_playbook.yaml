@@ -1,0 +1,81 @@
+- name: Apache Kafka configuration
+  hosts: becode@vmsdt-pisharodi.becode.org
+  become: true
+  gather_facts: false
+  vars_files: pass.yaml
+  vars:
+    kafka_user: becode
+    kafka_group: kafka
+    kafka_dir: /opt/kafka
+
+  tasks:
+    
+    - name: Creating a kafka group
+      ansible.builtin.group:
+        name: "{{ kafka_group }}"
+        state: present
+      when: false 
+
+  
+    - name: Creating kafka user and adding to kafka group
+      ansible.builtin.user: 
+        name: "{{ kafka_user }}"
+        groups: "{{ kafka_group }}"
+        state: present
+        append: yes
+      when: false
+
+    - name: Create directory for kafka and give necessary permissions
+      ansible.builtin.file:
+        path: "{{ kafka_dir }}"
+        state: directory
+        mode: 0755
+        recurse: yes
+        owner: "{{ kafka_user }}"
+        group: "{{ kafka_group }}"
+      when: false
+
+    - name: Download kafka tar file to the path /opt/kafka and extract
+      ansible.builtin.unarchive:
+        src: https://dlcdn.apache.org/kafka/3.4.0/kafka_2.13-3.4.0.tgz
+        dest: "{{ kafka_dir }}"
+        remote_src: yes
+      when: false
+
+    - name: Set Java & Kafka environment variables
+      ansible.builtin.lineinfile:
+        path: /etc/environment
+        line: "export KAFKA_HOME={{ kafka_dir }}/kafka_2.13-3.4.0/bin"
+        state: present 
+      when: false
+
+    - name: Update the log path
+      ansible.builtin.replace:
+        path: "{{ kafka_dir }}/kafka_2.13-3.4.0/config/server.properties"
+        regexp: 'log.dirs=(.+)'
+        replace: 'log.dirs={{ kafka_dir }}/kafka_2.13-3.4.0/logs'
+        backup: yes
+      when: false
+
+    - name: Update the Java Heap Size for Kafka
+      ansible.builtin.replace:
+        path: "{{ kafka_dir }}/kafka_2.13-3.4.0/bin/kafka-server-start.sh"
+        regexp: 'export KAFKA_HEAP_OPTS=(".+")'
+        replace: 'export KAFKA_HEAP_OPTS="-Xmx520M -Xms520M"'
+        backup: yes
+      when: false
+
+    - name: Start zookeeper service
+      ansible.builtin.shell:
+        cmd: ./bin/zookeeper-server-start.sh config/zookeeper.properties
+        chdir: "{{ kafka_dir }}/kafka_2.13-3.4.0"
+      when: true
+    
+    - name: Start kafka broker service
+      ansible.builtin.shell: 
+        cmd: ./bin/kafka-server-start.sh config/server.properties
+        chdir: "{{ kafka_dir }}/kafka_2.13-3.4.0"
+      when: false
+      
+
+
