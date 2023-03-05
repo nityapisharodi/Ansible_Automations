@@ -1,0 +1,31 @@
+- name: Java configuration
+  hosts: becode@vmsdt-pisharodi.becode.org
+  become: true
+  gather_facts: false
+  vars_files: pass.yaml
+
+  tasks:
+    - name: Install Java
+      ansible.builtin.apt:
+        name: openjdk-11-jre-headless
+        state: present
+        update_cache: yes
+      #become_method: sudo
+      when: true
+
+    - name: Set Java environment variables
+      ansible.builtin.lineinfile:
+        path: /etc/environment
+        line: "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64"
+        state: present 
+      when: false
+    
+    - name: Remove Java JDK directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /usr/lib/jvm/java-11-openjdk-amd64
+        - /usr/lib/jvm/java-1.11.0-openjdk-amd64
+      when: false
+
