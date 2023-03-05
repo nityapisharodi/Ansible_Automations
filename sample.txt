@@ -1,0 +1,5 @@
+ - name: Creating a docker group
+      group:
+        name: "{{ docker_group }}"
+        state: present
+      when: true
