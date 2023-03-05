@@ -8,6 +8,5 @@
  <li>Enter your desired vault password</li>
  <li>While running the playbook add the --ask-vault-pass flag. Ex: 'ansible-playbook playbook.yaml --ask-vault-pass'</li>
  </ol>
-    ### NOTE: 
-       *The vault file can be decrypted using the command 'ansible-vault decrypt pass.yaml'*
+  NOTE: *The vault file can be decrypted using the command 'ansible-vault decrypt pass.yaml'*
  
