@@ -1,0 +1,7 @@
+---
+# tasks file for copy-ssh-key
+- name: Copy the ssh public key to authorized key file
+  ansible.posix.authorized_key:
+    user: becode
+    state: present
+    key: "{{ lookup('file', '/Users/nitya/.ssh/id_rsa.pub') }}"
