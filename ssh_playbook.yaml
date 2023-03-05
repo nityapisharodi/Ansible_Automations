@@ -1,0 +1,4 @@
+- name: Copy ssh key to remote machine using ssh role
+  hosts: becode@vmsdt-pisharodi.becode.org
+  roles:
+    - Roles/ssh_copy_key
