@@ -1,0 +1,15 @@
+---
+# tasks file for handle_dotfiles
+- name: Fetch .bashrc file from remote machine to local machine
+  ansible.builtin.fetch:
+    src: "{{ dotfile_vm_vmdir }}/.bashrc"
+    dest: "{{ local_homedir }}"
+  when: false
+
+- name: Restore the .bashrc file at host
+  ansible.builtin.copy:
+    src: "{{ local_homedir }}/becode@vmsdt-pisharodi.becode.org/home/becode/.bashrc"
+    dest: "{{ dotfile_vm_vmdir }}"
+    owner: "{{ directory_owner }}"
+    #remote_src: yes
+  when: true

@@ -1,0 +1,5 @@
+---
+# vars file for handle_dotfiles
+dotfile_vm_vmdir: /home/becode
+local_homedir: VM_dotfile
+directory_owner: becode
