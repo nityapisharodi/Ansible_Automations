@@ -7,6 +7,8 @@
     kafka_user: becode
     kafka_group: kafka
     kafka_dir: /opt/kafka
+    kafka_datadir: /tmp/zookeeper
+  
 
   tasks:
     
@@ -65,17 +67,43 @@
         backup: yes
       when: false
 
-    - name: Start zookeeper service
-      ansible.builtin.shell:
-        cmd: ./bin/zookeeper-server-start.sh config/zookeeper.properties
-        chdir: "{{ kafka_dir }}/kafka_2.13-3.4.0"
+    - name: Create directory for kafka and give necessary permissions
+      ansible.builtin.file:
+        path: "{{  kafka_datadir }}"
+        state: directory
+        mode: 0755
+        recurse: yes
+        owner: "{{ kafka_user }}"
+        group: "{{ kafka_group }}"
+      when: false
+
+    - name: Copying the zookeeper service to remote machine
+      ansible.builtin.copy:
+        src: Apache_Kafka_service files/zookeeper.service
+        dest: /etc/systemd/system/zookeeper.service 
       when: true
     
-    - name: Start kafka broker service
-      ansible.builtin.shell: 
-        cmd: ./bin/kafka-server-start.sh config/server.properties
-        chdir: "{{ kafka_dir }}/kafka_2.13-3.4.0"
-      when: false
-      
+    - name: Copying the kafka broker service to remote machine
+      ansible.builtin.copy:
+        src: Apache_Kafka_service files/kafka.service
+        dest: /etc/systemd/system/kafka.service 
+      when: true
+
+    - name: Start the zookerper service
+      ansible.builtin.systemd:
+        name: zookeeper.service
+        state: started
+        daemon_reload: true
+        enabled: true
+      when: true
+
+    - name: Start the kafka broker service
+      ansible.builtin.systemd:
+        name: kafka.service
+        state: started
+        enabled: true
+      when: true
+
+
 
 
