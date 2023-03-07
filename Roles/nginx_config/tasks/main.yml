@@ -1,0 +1,19 @@
+---
+# tasks file for nginx_config
+# Installing Nginx using the genericOS package manager module. 
+# This module installs packages using apt or yum or others based on the host OS.
+# Ex: If its ubuntu host then it uses apt to install.
+- name: Install Nginx 
+  ansible.builtin.package:
+    name: nginx
+    state: present
+
+- name: Restart Nginx server
+  ansible.builtin.service:
+    name: nginx
+    state: started
+  #notify: Check HTTP Service
+ 
+
+
+

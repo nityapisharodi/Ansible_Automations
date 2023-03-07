@@ -1,0 +1,12 @@
+ - name: Start zookeeper service
+      ansible.builtin.shell:
+        cmd: ./bin/zookeeper-server-start.sh config/zookeeper.properties
+        chdir: "{{ kafka_dir }}/kafka_2.13-3.4.0"
+      when: true
+    
+    - name: Start kafka broker service
+      ansible.builtin.shell: 
+        cmd: ./bin/kafka-server-start.sh config/server.properties
+        chdir: "{{ kafka_dir }}/kafka_2.13-3.4.0"
+      when: false
+      

@@ -1,0 +1,15 @@
+- name: Apache Kafka configuration
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_files: pass.yaml
+
+  roles:
+    - Roles/nginx_config
+
+
+- handlers:
+    - name: Check HTTP Service
+      uri: 
+        url: http://vmsdt-pisharodi.becode.org
+        status_code: 200
