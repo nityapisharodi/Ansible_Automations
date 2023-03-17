@@ -1,0 +1,24 @@
+---
+- name: Gitlab-runner installation
+  hosts: all
+  become: true
+  gather_facts: false
+  vars_files: pass.yaml
+  tasks:
+    - name: Add the gitlab repo
+      ansible.builtin.shell:
+        cmd: curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh"
+      args:
+        executable: /bin/bash
+      when: true
+
+    - name: Install GitLab Runner package
+      apt:
+        name: gitlab-runner
+        state: present
+      when: true
+
+
+
+
+  
